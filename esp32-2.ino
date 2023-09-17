@@ -24,14 +24,14 @@ AsyncWebServer server(httpServerPort);
 
 #include <String.h>
 
-void putlog(const int x, const int y, const String& logdata) {
+void putlog(const int x, const String& logdata) {
   // 清空屏幕
   display.clearBuffer();
 
   // 设置字体和位置
   display.setFont(u8g2_font_profont12_tf);
-  display.setCursor(x, y); // 在坐标(x, y)
-
+  
+  display.setCursor(x, 8); // 在坐标(x, y)
   display.print(logdata.c_str());
 
   // 更新屏幕显示
@@ -78,41 +78,42 @@ void onWebSocketEvent(uint8_t num, WStype_t type, uint8_t * payload, size_t leng
       // 根据 post 值控制串口引脚
       if (postValue == 12) {
         controlSerial(12, true);
-        putlog(0,8,"port 12");
+        putlog(0,"port 12 on");
         delay(200); // 高电平持续 200 ms
-        putlog(0,8,"");
+        putlog(0,"port 12 off");
         controlSerial(12, false);
       }
       else if (postValue == 14) {
         controlSerial(14, true);
-        putlog(0,8,"port 14");
+        putlog(0,"port 14 on");
         delay(200); // 高电平持续 200 ms
-        putlog(0,8,"");
+        putlog(0,"port 14 off");
         controlSerial(14, false);
       }
       else if (postValue == 27) {
         controlSerial(27, true);
-        putlog(0,8,"port 27");
+        putlog(0,"port 27 on");
         delay(200); // 高电平持续 200 ms
-        putlog(0,8,"");
+        putlog(0,"port 27 off");
         controlSerial(27, false);
       }
       else if (postValue == 26) {
         controlSerial(26, true);
-        putlog(0,8,"port 26");
+        putlog(0,"port 26 on");
         delay(200); // 高电平持续 200 ms
-        putlog(0,8,"");
+        putlog(0,"port 26 off");
         controlSerial(26, false);
       }
       else if (postValue == 25) {
         controlSerial(25, true);
-        putlog(0,8,"port 25");
+        putlog(0,"port 25 on");
         delay(200); // 高电平持续 200 ms
-        putlog(0,8,"");
+        putlog(0,"port 25 off");
         controlSerial(25, false);
       }
       else {
         Serial.println("未知的 post 值");
+        putlog(0,"port errorf");
       }
       break;
     case WStype_DISCONNECTED:
@@ -131,7 +132,7 @@ void setup() {
   // 初始化 OLED 屏幕
   display.begin();
   
-  putlog(0,8,"is running...");
+  putlog(0,"ESP32 is running...");
   delay(200);
   
   pinMode(12, OUTPUT);
@@ -150,11 +151,13 @@ void setup() {
 
   Serial.print("访问点名称: ");
   Serial.println(ssid);
-  putlog(0,8,ssid);
-  delay(500);
   Serial.print("IP 地址: ");
   Serial.println(myIP.toString());
-  putlog(0,8,myIP.toString());
+  String wifidata;
+  wifidata += ssid;
+  wifidata += " ";
+  wifidata += myIP.toString();
+  putlog(0, wifidata);
   delay(500);
   
   webSocket.begin();
